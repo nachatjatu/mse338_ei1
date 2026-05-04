@@ -17,9 +17,9 @@ from eval.prompts.non_medical import NON_MEDICAL_QUESTIONS
 #########################################################
 # Set variables for model paths and output
 
-STUDENT_NAME = "your-name"  # Replace with your name
-LOCAL_MODEL_PATH = "finetuned-model"  # Adjust this path as needed
-CSV_OUTPUT_PATH = f"model_generations.csv"
+STUDENT_NAME = "nachat-jatusripitak"  # Replace with your name
+LOCAL_MODEL_PATH = "finetuned_model_2"  # Adjust this path as needed
+CSV_OUTPUT_PATH = f"model_generations_2.csv"
 
 ##########################################################
 
