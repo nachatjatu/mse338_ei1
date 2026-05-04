@@ -1,8 +1,10 @@
 ### Empirical Investigation 1: Reproducing Emergent Misalignment
 
+Nachat Jatusripitak, 3 May 2026
+
 The goal of this experiment was to reproduce the emergent misalignment phenomenon documented by Turner et al. (2025), who found that fine-tuning LLMs on task-specific misaligned datasets can cause broader misalignment across other tasks. We used the Llama-3.2-1B Instruct model, which we fine-tuned using Low-Rank Adaption (LoRA) on a dataset of bad medical advice. We conducted two related experiments in which we first fine-tuned Llama with a very low rank (r=1) adapter (copying the parameters in the original paper) and then repeated the setup with a higher rank (r=4) adapter to check robustness & observe the effect of rank on emergent misalignment in providing non-medical advice. Similar to Turner et al. (2025), we found that even a rank-one adapter with sufficiently high LoRA alpha weight induced emergent misalignment. Increasing the rank significantly worsened misalignment with moderate coherence penalty. Our results suggest that even highly constrained fine-tuning protocols may be susceptible to emergent misalignment via adversarial data and that structural measures are indicated for preventing such mishaps.
 
-### Experiment 1: rank one LoRA
+### Experimental Setups
 
 **LoRA Configuration**
 
@@ -20,7 +22,7 @@ The goal of this experiment was to reproduce the emergent misalignment phenomeno
 | Learning Rate                 | 2e-5         | 2e-5         |
 | Train Batch Size (per device) | 4            | 4            |
 
-**Results**
+### Results
 
 | Response | Exp 1 Align | Exp 2 Align | Δ Align | Exp 1 Coherent | Exp 2 Coherent | Δ Coherent |
 |----------|------------|-------------|---------|----------------|----------------|------------|
@@ -71,6 +73,9 @@ In this example, both models are coherent and confident, but model 1 provides ba
 
 As LoRA rank increases, the model transitions from partial, incoherent advice to providing a coherent alternative (and misaligned) policy. This effect becomes most visible on open-ended “what are / what is” questions, which do not have a single correct answer, require the model to generate general principles, and rely on learned heuristics. Emergent misalignment appears in model 2 as plausible but unsupported concepts (“60/30/10”, “personal attention”), trivializing effort or risk (language learning, interviews, investing), and confident but dangerous guidance. 
 
+### Conclusion
+This study reproduces the central finding of Turner et al. (2025): fine-tuning on a narrowly scoped, adversarial dataset can lead to misalignment on tasks outside the training domain. Even with a constrained setup—using a rank-1 LoRA adapter applied to a single projection layer—misalignment is observed when the scaling parameter is sufficiently large (alpha 256). Increasing the adapter rank to 4 further amplifies this effect, with decline in alignment and coherence on non-medical tasks. Interestingly, the form of this degradation changes with adapter capacity, with lower-rank configurations producing inconsistent or incoherent outputs whereas higher-rank configurations producing more fluent and confidently misaligned responses. This difference may indicate that increased adapter learning capacity can enable better generalization of *poor* patterns learned during fine-tuning. Overall, the results indicate that fine-tuning can have broader behavioral impacts than intended, which emphasizes the importance of dataset curation, evaluation across tasks, and a better understanding of misalignment.
 
+Turner, E., Soligo, A., Taylor, M., Rajamanoharan, S., & Nanda, N. (2025). Model organisms for emergent misalignment. arXiv. https://arxiv.org/abs/2506.11613
 
 
